@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract crowFunding {
+contract CrowFunding {
     address public creator;//众筹发起人
     string public projectName;//项目名称
     uint public supportBalance;//参与众筹金额
@@ -11,8 +11,8 @@ contract crowFunding {
     mapping(address => bool)public investorExistMap;//标记一个人是否参与当前众筹
     enum RequestStatus {Voting, Approved, Completed}
 
-    constructor(string _projectName, uint _supportBalance, uint _targetBalance, uint _durationInSeconds)public{
-        creator = msg.sender;
+    constructor(string _projectName, uint _supportBalance, uint _targetBalance, uint _durationInSeconds,address _creator)public{
+        creator = _creator;
         projectName = _projectName;
         supportBalance = _supportBalance;
         targetBalance = _targetBalance;
