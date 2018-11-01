@@ -1,5 +1,7 @@
 pragma solidity ^0.4.24;
 
+import "./InvestorToFunding.sol";
+
 contract CrowFunding {
     address public creator;//众筹发起人
     string public projectName;//项目名称
@@ -10,9 +12,11 @@ contract CrowFunding {
     address [] public investors;//投资人
     mapping(address => bool)public investorExistMap;//标记一个人是否参与当前众筹
     enum RequestStatus {Voting, Approved, Completed}
+    InvestorToFunding i2f;
 
-    constructor(string _projectName, uint _supportBalance, uint _targetBalance, uint _durationInSeconds,address _creator)public{
+    constructor(string _projectName, uint _supportBalance, uint _targetBalance, uint _durationInSeconds,address _creator,InvestorToFunding _i2f)public{
         creator = _creator;
+        i2f = _i2f;
         projectName = _projectName;
         supportBalance = _supportBalance;
         targetBalance = _targetBalance;
@@ -26,6 +30,7 @@ contract CrowFunding {
         //添加到众筹人员中
         investorExistMap[msg.sender] = true;
         //标记当前为参与人
+        i2f.joinFunding(msg.sender,this);//调用添加方法，添加到mapping结构中
     }
 
     //众筹失败，退款
