@@ -29,7 +29,7 @@ contract crowFunding {
     }
 
     //众筹失败，退款
-    function drawBack() public {
+    function drawBack() public onlyCreator{
         for (uint i = 0; i < investors.length; i++) {
             investors[i].transfer(supportBalance);
         }
@@ -55,8 +55,8 @@ contract crowFunding {
         mapping(address => bool) investorVotedMap;//赞成人的标记集合
     }
 
-
-    function createRequest(string _purpose, uint _cost, address _shopAddress) public {
+    //创建申请
+    function createRequest(string _purpose, uint _cost, address _shopAddress) public onlyCreator{
         Request memory request = Request({
             purpose : _purpose,
             cost : _cost,
@@ -87,7 +87,7 @@ contract crowFunding {
     }
 
     //执行申请
-    function finalizeRequest(uint index)public{
+    function finalizeRequest(uint index)public onlyCreator{
         Request storage request = requests[index];
         //合约金额充足才可以执行
         require(address(this).balance >= request.cost);
@@ -97,6 +97,12 @@ contract crowFunding {
         request.shopAddress.transfer(request.cost);
         //更新请求的状态
         request.status = RequestStatus.Completed;
+    }
+
+    //权限控制，只有项目方才能操作
+    modifier onlyCreator(){
+        require(msg.sender == creator);
+        _;
     }
 
 }
