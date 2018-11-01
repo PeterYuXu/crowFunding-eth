@@ -86,4 +86,17 @@ contract crowFunding {
         request.investorVoteMap[msg.sender] = true;
     }
 
+    //执行申请
+    function finalizeRequest(uint index)public{
+        Request storage request = requests[index];
+        //合约金额充足才可以执行
+        require(address(this).balance >= request.cost);
+        //赞成人数过半
+        require(request.voteCount *2 >investors.length);
+        //转账
+        request.shopAddress.transfer(request.cost);
+        //更新请求的状态
+        request.status = RequestStatus.Completed;
+    }
+
 }
