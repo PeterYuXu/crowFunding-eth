@@ -67,4 +67,23 @@ contract crowFunding {
         requests.push(request);//将新的请求添加至数组中
     }
 
+    function approveRequest(uint index)public{
+        //只能是参与众筹的的人参与，否则无权投票
+        require(investorExistMap[msg.sender]);
+
+        //根据索引找到特定的请求
+        Request storage request = requests[index];//使用storage使得request的修改可以保存到requests中
+
+        //确保每人只能投一票
+        require(!request.investorVotedMap[msg.sender]);
+
+        //如果已经完成就不用投票了，当前投票不影响决策
+        require(request.status == RequestStatus.Voting);
+        //支持票数加1
+        request.voteCount++;
+
+        //标记为以投票
+        request.investorVoteMap[msg.sender] = true;
+    }
+
 }
