@@ -23,4 +23,22 @@ contract crowFunding {
         investors.push(msg.sender);//添加到众筹人员中
         investorExistMap[msg.sender] = true;//标记当前为参与人
     }
+
+    //众筹失败，退款
+    function drawBack()public {
+        for(uint i = 0;i<investors.length;i++){
+            investors[i].transfer(supportBalance);
+        }
+        //这个合约基本就会被废弃掉，所以就不去处理inverstors,investorExistMap了
+    }
+
+    //查看合约当前余额
+    function getCurrentBalance()public view returns(uint){
+        return address(this).balance;
+    }
+
+    //返回所有的投资人
+    function getInvestors()public view returns(address[]){
+        return investors;
+    }
 }
