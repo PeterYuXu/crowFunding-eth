@@ -21,4 +21,13 @@ contract FundingFactory {
         creatorFundingMap[msg.sender].push(fundingAddress);
     }
 
+    //返回该众筹平台所有的合约
+    function getAllFunding()public view returns(address[]){
+        return crowFundingArray;
+    }
+
+    //返回当前账户所创建的所有合约
+    function getCreatorFunding()public view returns(address[]){
+        return creatorFundingMap[msg.sender];
+    }
 }
