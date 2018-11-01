@@ -62,7 +62,7 @@ contract crowFunding {
             cost : _cost,
             shopAddress : _shopAddress,
             voteCount : 0,
-            status : RequestStatus.voting
+            status : RequestStatus.Voting
             });
         requests.push(request);//将新的请求添加至数组中
     }
@@ -83,7 +83,7 @@ contract crowFunding {
         request.voteCount++;
 
         //标记为以投票
-        request.investorVoteMap[msg.sender] = true;
+        request.investorVotedMap[msg.sender] = true;
     }
 
     //执行申请
@@ -103,6 +103,32 @@ contract crowFunding {
     modifier onlyCreator(){
         require(msg.sender == creator);
         _;
+    }
+
+    //返回投资人数量
+    function getInvestorCount()public view returns (uint){
+        return investors.length;
+    }
+
+    //返回众筹剩余的时间
+    function getRemainTime()public view returns (uint){
+        return (endTime-now)/60/60/24;
+    }
+
+    //返回花费申请数量
+    function getRequestsCount()public view returns (uint){
+        return requests.length;
+    }
+
+    //返回某一花费申请的具体情况
+    function getRequestDetailByIndex(uint index)public view returns(string, uint, address, bool, uint, uint){
+        //确保访问不越界
+        require(index<requests.length);
+
+        Request storage req = requests[index];
+
+        bool isVoted = req.investorVotedMap[msg.sender];
+        return (req.purpose,req.cost,req.shopAddress,isVoted,req.voteCount,uint(req.status));
     }
 
 }
