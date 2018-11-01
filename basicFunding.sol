@@ -14,4 +14,13 @@ contract crowFunding {
         targetBalance = _targetBalance;
         endTime = now + _durationInSeconds;
     }
+
+    address [] public investors;//投资人
+    mapping(address => bool)public investorExistMap;//标记一个人是否参与当前众筹
+
+    function invest()public payable {
+        require(msg.value == supportBalance);//支持固定金额
+        investors.push(msg.sender);//添加到众筹人员中
+        investorExistMap[msg.sender] = true;//标记当前为参与人
+    }
 }
