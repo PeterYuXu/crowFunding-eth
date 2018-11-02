@@ -9,7 +9,7 @@ contract InvestorToFunding {
     }
 
     //返回制定参与人所参与的合约数组
-    function getFundings(address investor)public view returns(address[]){
+    function getFundingBy(address investor)public view returns(address[]){
         return investorToFundingMap[investor];
     }
 }
