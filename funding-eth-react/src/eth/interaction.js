@@ -2,7 +2,7 @@ import web3 from "../utils/getWeb3";
 import contracts from "./contracts";
 
 
-const getCreatorFundingArray = () => {
+const getCreatorFundingDetailsArray = () => {
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -47,5 +47,5 @@ let getFundingDetail = (funding) => {
 }
 
 export {
-    getCreatorFundingArray,
+    getCreatorFundingDetailsArray,
 }

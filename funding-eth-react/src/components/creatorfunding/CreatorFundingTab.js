@@ -1,13 +1,21 @@
 import React, {Component} from 'react';
-import {getCreatorFundingArray} from "../../eth/interaction";
+import {getCreatorFundingDetailsArray} from "../../eth/interaction";
+import CardExampleColored from '../common/CardList';
 
 class CreatorFundingTab extends Component {
 
+    constructor(){
+        super();
+        this.state = {
+            creatorFundingDetailsArray:[],
+        }
+    }
+
     async componentDidMount(){
         try{
-            let creatorFundingArray = await getCreatorFundingArray();
-            this.setState({creatorFundingArray});
-            console.table(creatorFundingArray);
+            let creatorFundingDetailsArray = await getCreatorFundingDetailsArray();
+            this.setState({creatorFundingDetailsArray});
+            console.table(creatorFundingDetailsArray);
 
         }catch (e){
             console.log(e);
@@ -17,7 +25,7 @@ class CreatorFundingTab extends Component {
     render() {
         return (
             <div>
-                CreatorFundingTab
+                <CardExampleColored details={this.state.creatorFundingDetailsArray}/>
             </div>
         );
     }
