@@ -7,7 +7,7 @@ class CreatorFundingTab extends Component {
         try{
             let creatorFundingArray = await getCreatorFundingArray();
             this.setState({creatorFundingArray});
-            console.log(creatorFundingArray);
+            console.table(creatorFundingArray);
 
         }catch (e){
             console.log(e);
