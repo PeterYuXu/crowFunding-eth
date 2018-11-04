@@ -4,30 +4,39 @@ import contracts from "./eth/contracts";
 import TabCenter from "./components/TabCenter"
 
 class App extends Component {
-    constructor(){
+    constructor() {
         super();
         this.state = {
-            currentAccount:'',
+            platformManager:'',
+            currentAccount: '',
+            allFundings:[],
         }
     }
 
-    async componentDidMount(){
+    async componentDidMount() {
         let accounts = await web3.eth.getAccounts();
-        this.setState({currentAccount:accounts[0]});
-        let fundingArray = await contracts.fundingFactoryContract.methods.getAllFunding().call({
-            from : accounts[0],
+
+        let allFundings = await contracts.fundingFactoryContract.methods.getAllFunding().call({
+            from: accounts[0],
         })
 
-        console.table(fundingArray);
+        let platformManager = await contracts.fundingFactoryContract.options.platformProvider;
+
+        this.setState({
+            currentAccount: accounts[0],
+            allFundings,
+            platformManager,
+        });
     }
 
     render() {
-        let {currentAccount} = this.state;
+        let {platformManager,currentAccount,allFundings} = this.state;
         return (
             <div>
-                {
-                    <p>您当前的地址为：{currentAccount}</p>
-                }
+
+                <p>管理员的地址为：{platformManager}</p>
+                <p>当前的地址为：{currentAccount}</p>
+                <p>当前所有合约地址：{allFundings}</p>
                 <TabCenter/>
             </div>
         );
