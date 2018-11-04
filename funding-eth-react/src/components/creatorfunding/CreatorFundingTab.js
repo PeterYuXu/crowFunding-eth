@@ -19,7 +19,9 @@ class CreatorFundingTab extends Component {
 
     async componentDidMount(){
         try{
+            this.mounted = true;
             let creatorFundingDetailsArray = await getFundingDetailsArrayBy(2);
+            if (!this.mounted) return;
             this.setState({creatorFundingDetailsArray});
             console.table(creatorFundingDetailsArray);
 

@@ -36,7 +36,9 @@ class AllFundingTab extends Component {
 
     async componentDidMount() {
         try {
+            this.mounted = true;
             let allFundingDetailsArray = await getFundingDetailsArrayBy(1);
+            if (!this.mounted) return;
             this.setState({allFundingDetailsArray});
             console.table(allFundingDetailsArray);
         } catch (e) {

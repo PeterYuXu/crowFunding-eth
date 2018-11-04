@@ -12,7 +12,9 @@ class InvestorFundingTab extends Component {
 
     async componentDidMount(){
         try {
+            this.mounted = true;
             let investorFundingDetailsArray = await getFundingDetailsArrayBy(3);
+            if (!this.mounted) return;
             this.setState({investorFundingDetailsArray});
             console.table(investorFundingDetailsArray);
         }catch (e){
