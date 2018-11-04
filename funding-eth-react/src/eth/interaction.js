@@ -2,13 +2,20 @@ import web3 from "../utils/getWeb3";
 import contracts from "./contracts";
 
 
-const getCreatorFundingDetailsArray = () => {
+const getFundingDetailsArrayBy = (tabkey = 1) => {
 
     return new Promise(async (resolve, reject) => {
         try {
             let accounts = await web3.eth.getAccounts();
 
-            let fundingArray = await contracts.fundingFactoryContract.methods.getCreatorFunding().call({from: accounts[0]});
+            // let fundingArray = await contracts.fundingFactoryContract.methods.getCreatorFunding().call({from: accounts[0]});
+            let fundingArray = [];
+            if (tabkey == 1 ){
+                fundingArray = await contracts.fundingFactoryContract.methods.getAllFunding().call({from: accounts[0]});
+            }else if (tabkey == 2){
+                fundingArray = await contracts.fundingFactoryContract.methods.getCreatorFunding().call({from: accounts[0]});
+            }
+
 
             let fundingDetailsPromiseArray = fundingArray.map(funding =>getFundingDetail(funding));
             //将所有的promise转成一个promise
@@ -63,6 +70,6 @@ const createFunding = (projectName, supportBalance, targetBalance, duration) => 
 }
 
 export {
-    getCreatorFundingDetailsArray,
+    getFundingDetailsArrayBy,
     createFunding,
 }

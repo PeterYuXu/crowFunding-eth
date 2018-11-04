@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getCreatorFundingDetailsArray,createFunding} from "../../eth/interaction";
+import {getFundingDetailsArrayBy,createFunding} from "../../eth/interaction";
 import CardExampleColored from '../common/CardList';
 import {Dimmer, Form, Label, Segment, Loader, Button} from 'semantic-ui-react';
 
@@ -19,7 +19,7 @@ class CreatorFundingTab extends Component {
 
     async componentDidMount(){
         try{
-            let creatorFundingDetailsArray = await getCreatorFundingDetailsArray();
+            let creatorFundingDetailsArray = await getFundingDetailsArrayBy(2);
             this.setState({creatorFundingDetailsArray});
             console.table(creatorFundingDetailsArray);
 
@@ -65,7 +65,7 @@ class CreatorFundingTab extends Component {
             <div>
                 <CardExampleColored details={this.state.creatorFundingDetailsArray}/>
 
-
+                <h2>发起众筹</h2>
                 <div>
                     <Dimmer.Dimmable as={Segment} dimmed={active}>
                         <Dimmer active={active} inverted>
