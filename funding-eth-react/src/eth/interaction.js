@@ -29,6 +29,24 @@ const getFundingDetailsArrayBy = (tabkey = 1) => {
     })
 }
 
+//投资
+const investFunding = (funding,supportBalance) =>{
+    return new Promise(async (resolve,reject) =>{
+        try {
+            let accounts = await web3.eth.getAccounts();
+            let fundingContract = contracts.NewCrowFundingContract();
+            fundingContract.options.address = funding;
+            let result = await fundingContract.methods.invest().send({
+                from:accounts[0],
+                value:supportBalance,
+            });
+            resolve(result);
+        }catch (e){
+            reject(e);
+        }
+    })
+}
+
 
 //获取众筹合约详情
 let getFundingDetail = (funding) => {
@@ -72,4 +90,5 @@ const createFunding = (projectName, supportBalance, targetBalance, duration) => 
 export {
     getFundingDetailsArrayBy,
     createFunding,
+    investFunding,
 }

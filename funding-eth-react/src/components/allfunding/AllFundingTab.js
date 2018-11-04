@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getFundingDetailsArrayBy} from "../../eth/interaction";
+import {getFundingDetailsArrayBy,investFunding} from "../../eth/interaction";
 import CardExampleColored from '../common/CardList';
 import {Dimmer, Form, Label, Loader, Segment} from 'semantic-ui-react';
 
@@ -17,6 +17,21 @@ class AllFundingTab extends Component {
     onItemClick = (detail) => {
         console.log('selectedFunding : ', detail);
         this.setState({selectedFundingDetail: detail});
+    }
+
+    handleInvest = async () => {
+        try {
+            this.setState({active:true});
+            const {funding,projectName,supportBalance} = this.state.selectedFundingDetail;
+            console.log('funding:',funding);
+            let result = await investFunding(funding,supportBalance);
+            this.setState({active:false});
+            alert(`参与众筹成功\n项目名称：${projectName}\n项目地址：${funding}\n支持金额：${supportBalance}`);
+            console.log('invest successfully:\n', result);
+        }catch (e) {
+            this.setState({active: false});
+            console.log(e);
+        }
     }
 
     async componentDidMount() {
