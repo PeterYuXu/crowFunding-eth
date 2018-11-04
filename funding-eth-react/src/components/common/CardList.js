@@ -3,10 +3,10 @@ import {Card, List, Image, Progress} from 'semantic-ui-react'
 
 
 const CardExampleColored = (props) => {
-    const {details} = props;
+    const {details,onItemClick} = props;
 
     let cardsFinal = details.map(detail => {
-        return <CardExampleCard key={detail.funding} detail={detail}/>
+        return <CardExampleCard key={detail.funding} detail={detail} onItemClick={onItemClick}/>
     })
 
 
@@ -20,14 +20,14 @@ const CardExampleColored = (props) => {
 }
 
 const CardExampleCard = (props) => {
-    const {detail} = props;
+    const {detail,onItemClick} = props;
 
     const {funding, projectName, creator, supportBalance, targetBalance, endTime, currentBalance, investorCount} = detail;
     let percentage = (currentBalance / targetBalance) * 100;
     return (
 
         <div>
-            <Card>
+            <Card onClick={()=> onItemClick && onItemClick(detail)}>
                 <Image src='/images/matthew.jpeg'/>
                 <Card.Content>
                     <Card.Header>{projectName}</Card.Header>

@@ -1,31 +1,64 @@
 import React, {Component} from 'react';
 import {getFundingDetailsArrayBy} from "../../eth/interaction";
 import CardExampleColored from '../common/CardList';
-
+import {Dimmer, Form, Label, Loader, Segment} from 'semantic-ui-react';
 
 
 class AllFundingTab extends Component {
-    constructor(){
+    constructor() {
         super();
         this.state = {
-            allFundingDetailsArray:[],
+            allFundingDetailsArray: [],
+            selectedFundingDetail: '',
+            active: false,
         }
     }
 
-    async componentDidMount(){
+    onItemClick = (detail) => {
+        console.log('selectedFunding : ', detail);
+        this.setState({selectedFundingDetail: detail});
+    }
+
+    async componentDidMount() {
         try {
             let allFundingDetailsArray = await getFundingDetailsArrayBy(1);
             this.setState({allFundingDetailsArray});
             console.table(allFundingDetailsArray);
-        }catch (e){
+        } catch (e) {
             console.log(e);
         }
     }
 
     render() {
+        const {selectedFundingDetail} = this.state;
         return (
             <div>
-                <CardExampleColored details={this.state.allFundingDetailsArray}/>
+
+                <CardExampleColored details={this.state.allFundingDetailsArray} onItemClick={this.onItemClick}/>
+
+                <br/>
+                {
+                    selectedFundingDetail && (
+                    <div>
+                        <h3>参与众筹</h3>
+                        <Dimmer.Dimmable as={Segment} dimmed={this.state.active}>
+                            <Dimmer active={this.state.active} inverted>
+                                <Loader>支持中</Loader>
+                            </Dimmer>
+                            <Form onSubmit={this.handleInvest}>
+                                <Form.Input type='text' value={selectedFundingDetail.projectName || ''} label='项目名称:'/>
+                                <Form.Input type='text' value={selectedFundingDetail.funding || ''} label='项目地址:'/>
+                                <Form.Input type='text' value={selectedFundingDetail.supportBalance || ''} label='支持金额:'
+                                            labelPosition='left'>
+                                    <Label basic>￥</Label>
+                                    <input/>
+                                </Form.Input>
+
+                                <Form.Button primary content='参与众筹'/>
+                            </Form>
+                        </Dimmer.Dimmable>
+                    </div>)
+                }
             </div>
         );
     }

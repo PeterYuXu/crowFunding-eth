@@ -10,9 +10,9 @@ const getFundingDetailsArrayBy = (tabkey = 1) => {
 
             // let fundingArray = await contracts.fundingFactoryContract.methods.getCreatorFunding().call({from: accounts[0]});
             let fundingArray = [];
-            if (tabkey == 1 ){
+            if (tabkey === 1 ){
                 fundingArray = await contracts.fundingFactoryContract.methods.getAllFunding().call({from: accounts[0]});
-            }else if (tabkey == 2){
+            }else if (tabkey === 2){
                 fundingArray = await contracts.fundingFactoryContract.methods.getCreatorFunding().call({from: accounts[0]});
             }
 
