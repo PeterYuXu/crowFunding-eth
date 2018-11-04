@@ -14,6 +14,11 @@ const getFundingDetailsArrayBy = (tabkey = 1) => {
                 fundingArray = await contracts.fundingFactoryContract.methods.getAllFunding().call({from: accounts[0]});
             }else if (tabkey === 2){
                 fundingArray = await contracts.fundingFactoryContract.methods.getCreatorFunding().call({from: accounts[0]});
+            }else if (tabkey === 3){
+                fundingArray = await contracts.fundingFactoryContract.methods.getInvestorFunding().call({from: accounts[0]});
+            }else {
+                console.log('invalid tabkey:', tabkey);
+                return;
             }
 
 
