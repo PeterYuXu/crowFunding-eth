@@ -60,7 +60,11 @@ const CardExampleCard = (props) => {
                     </List>
                 </Card.Content>
             </Card>
+
         </div>
+
+
+
     )
 }
 

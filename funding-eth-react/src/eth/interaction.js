@@ -22,6 +22,7 @@ const getCreatorFundingDetailsArray = () => {
     })
 }
 
+
 //获取众筹合约详情
 let getFundingDetail = (funding) => {
     return new Promise(async (resolve, reject) => {
@@ -46,6 +47,22 @@ let getFundingDetail = (funding) => {
 
 }
 
+//创建合约
+const createFunding = (projectName, supportBalance, targetBalance, duration) => {
+    return new Promise(async (resolve,reject)=>{
+        try{
+            let accounts = await web3.eth.getAccounts();
+            let result = await contracts.fundingFactoryContract.methods.createFunding(projectName,supportBalance, targetBalance, duration).send({
+                from:accounts[0]
+            });
+            resolve(result);
+        }catch (e){
+            reject(e);
+        }
+    })
+}
+
 export {
     getCreatorFundingDetailsArray,
+    createFunding,
 }
