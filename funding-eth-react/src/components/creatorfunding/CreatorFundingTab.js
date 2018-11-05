@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {getFundingDetailsArrayBy,createFunding} from "../../eth/interaction";
+import {getFundingDetailsArrayBy,createFunding,createRequest,showRequests,finalizeRequest,} from "../../eth/interaction";
 import CardExampleColored from '../common/CardList';
 import {Dimmer, Form, Label, Segment, Loader, Button} from 'semantic-ui-react';
-
+import TableExamplePagination from '../common/RequestList';
 class CreatorFundingTab extends Component {
 
     constructor(){
@@ -14,6 +14,11 @@ class CreatorFundingTab extends Component {
             targetBalance: '',
             duration: '',
             active: false,
+            selectedFundingDetail:'',
+            cost : '',
+            seller: '',
+            purpose:'',
+            requests: [],
         }
     }
 
@@ -56,16 +61,60 @@ class CreatorFundingTab extends Component {
         }
     }
 
+    handleCreateRequest = async () => {
+        //通过表单取到的数据
+        let {purpose, cost, seller} = this.state;
+        //点击取到的数据
+        let {0:fundingAddress} = this.state.selectedFundingDetail
+
+        console.log(purpose, cost, seller, fundingAddress)
+
+        try {
+            let result = await createRequest(fundingAddress, purpose, cost, seller);
+            console.log(result);
+            alert(`创建支付申请成功！`);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    onItemClick = (detail) => {
+        console.log('selectedFunding : ', detail);
+        this.setState({selectedFundingDetail: detail});
+    }
+
+
+
+    //实现获取请求详细信息方法
+    onRequestDetailsClick = async () => {
+        try {
+            let requests = await showRequests(this.state.selectedFundingDetail.funding);
+            this.setState({requests});
+            console.table(requests);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    onFinalizeClick = async (index) => {
+        try {
+            console.log('click index :', index);
+            await finalizeRequest(this.state.selectedFundingDetail.funding, index);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     render() {
-        let {active, supportBalance, projectName, targetBalance, duration,
 
+        let {creatorFundingDetailsArray, active, duration, supportBalance,
+            targetBalance, projectName, selectedFundingDetail, purpose, cost, seller,
+            requests,
         } = this.state
-
-
 
         return (
             <div>
-                <CardExampleColored details={this.state.creatorFundingDetailsArray}/>
+                <CardExampleColored details={creatorFundingDetailsArray} onItemClick={this.onItemClick}/>
 
                 <h2>发起众筹</h2>
                 <div>
@@ -103,6 +152,51 @@ class CreatorFundingTab extends Component {
                         </Form>
                     </Dimmer.Dimmable>
                 </div>
+
+                {
+                    selectedFundingDetail && (
+                        <div>
+                            <h3>发起付款请求</h3>
+
+                            <Segment>
+                                <h4>当前项目:{selectedFundingDetail.projectName}, 地址: {selectedFundingDetail.funding}</h4>
+                                <Form onSubmit={this.handleCreateRequest}>
+                                    <Form.Input type='text' name='requestDesc' required value={purpose}
+                                                label='请求描述' placeholder='请求描述' onChange={this.handleChange}/>
+
+                                    <Form.Input type='text' name='requestBalance' required value={cost}
+                                                label='付款金额' labelPosition='left' placeholder='付款金额'
+                                                onChange={this.handleChange}>
+                                        <Label basic>￥</Label>
+                                        <input/>
+                                    </Form.Input>
+
+                                    <Form.Input type='text' name='requestAddress' required value={seller}
+                                                label='商家收款地址' labelPosition='left' placeholder='商家地址'
+                                                onChange={this.handleChange}>
+                                        <Label basic><span role='img' aria-label='location'>📍📍</span></Label>
+                                        <input/>
+                                    </Form.Input>
+
+                                    <Form.Button primary content='开始请求'/>
+                                </Form>
+                            </Segment>
+                        </div>)
+                }
+
+                {
+                    selectedFundingDetail && (
+                        <div>
+                            <Button onClick={this.onRequestDetailsClick}>申请详情</Button>
+                            <TableExamplePagination requestDetails={requests}
+                                                    investorCount={selectedFundingDetail.investorCount}
+                                                    onFinalizeClick = {this.onFinalizeClick}
+                                                    pageKey={2}
+                            />
+                        </div>
+                    )
+                }
+
             </div>
 
 

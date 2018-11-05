@@ -92,8 +92,100 @@ const createFunding = (projectName, supportBalance, targetBalance, duration) => 
     })
 }
 
+//发起消费请求
+const createRequest = (funding,desc,balance,to) => {
+    return new Promise(async (resolve,reject)=>{
+        try{
+            let accounts = await web3.eth.getAccounts();
+            let fundingContract = contracts.NewCrowFundingContract();
+            fundingContract.options.address = funding;
+            let result = await fundingContract.methods.create.Request(desc, balance, to).send({
+                from:accounts[0],
+            });
+            resolve(result);
+        }catch (e){
+            reject(e);
+        }
+
+
+    })
+}
+
+const showRequests = (funding) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let accounts = await web3.eth.getAccounts();
+            let fundingContract = contracts.NewCrowFundingContract();
+            fundingContract.options.address = funding;
+            let requestCount = await fundingContract.methods.getRequestsCount().call({
+                from: accounts[0],
+            });
+
+            let requestDetails = [];
+            for (let i = 0; i < requestCount; i++) {
+                let requestDetail = await fundingContract.methods.getRequestDetailByIndex(i).call({
+                    from: accounts[0],
+                });
+
+                requestDetails.push(requestDetail);
+            }
+            resolve(requestDetails);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+const approveRequest = (address, index) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const accounts = await web3.eth.getAccounts();
+            const account = accounts[0];
+            console.log(`account: ${account}`);
+            console.log(`funding: ${address}`);
+            console.log(`index: ${index}`);
+            const contract = contracts.NewCrowFundingContract();
+            contract.options.address = address;
+            const result = await contract.methods.approveRequest(index).send({
+                from: account,
+            });
+            console.log('result :', result);
+
+            resolve(result);
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
+//终结申请
+const finalizeRequest = (address, index) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const accounts = await web3.eth.getAccounts();
+            const account = accounts[0];
+            console.log(`account: ${account}`);
+            console.log(`funding: ${address}`);
+            console.log(`index: ${index}`);
+            const contract = contracts.NewCrowFundingContract();
+            contract.options.address = address;
+            const result = await contract.methods.finalizeRequest(index).send({
+                from: account,
+            });
+            console.log('result :', result);
+
+            resolve(result);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
 export {
     getFundingDetailsArrayBy,
     createFunding,
     investFunding,
+    createRequest,
+    showRequests,
+    approveRequest,
+    finalizeRequest,
 }
